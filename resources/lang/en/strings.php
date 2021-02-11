@@ -16,4 +16,9 @@ return [
     'total_entrante' => 'Total Entrante',
     'total_saliente' => 'Total Saliente',
     'rentabilidad' => 'Rentabilidad',
+    'nombre' => 'Nombre',
+    'promotor' => 'Promotor',
+    'recinto' => 'Recinto',
+    'numero_espectadores' => 'Número Espectadores',
+    'fecha' => 'Fecha',
 ];

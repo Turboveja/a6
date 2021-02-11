@@ -14,10 +14,17 @@ use Illuminate\Http\Request;
  */
 class ConciertoController extends Controller
 {
-
+    /**
+     * Alta de concierto y envío de mail de información
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function altaConcierto(Request $request)
     {
-        $validated = $request->validate([
+        //Validamos los datos que nos llegan
+        //Podríamos hacer la validación a traves de un objeto Request validation, pero está forma es más facil de debug
+        $request->validate([
             'nombre' => 'required|string|max:80',
             'fecha' => 'required|date',
             'recinto_id' => 'required|exists:recintos,id',
@@ -26,21 +33,12 @@ class ConciertoController extends Controller
             'grupos_ids' => 'required|array',
             'grupos_ids.*' => 'required|exists:grupos.id',
             'medios_publicitarios_ids' => 'required|array',
-            'medios_publicitarios_ids.*' => 'required|exists:medios_publicitarios.id',
+            'medios_publicitarios_ids.*' => 'required|exists:medios.id',
         ]);
 
         try {
+            //Iniciamos una transaccion db
             \DB::beginTransaction();
-
-            //promotores
-            //recintos
-            //conciertos
-            //grupos
-            //medios (publicidad)
-            //grupos_conciertos
-            //grupos_medios
-
-            $rentabilidad = null; //TODO luego la calculamos
 
             //Damos de alta el concierto
             $concierto_repository = new ConciertoRepository();
@@ -66,33 +64,41 @@ class ConciertoController extends Controller
             //Updateamos la rentabilidad del concierto
             $concierto_repository->updateRentabilidadConcierto($concierto, $desglose);
 
-            //todo hacer update del desglose
-
-            //Enviamos un mail al promotor del concierto
-            $email_promotor = $concierto->promotor->email;
-//            $promotor = Promotor::find($request->promotor);
-
             //Enviamos el mail
-            $mail_concierto = $concierto_repository->enviarMailPromotor($concierto, $desglose, $email_promotor);
+            $concierto_repository->enviarMailPromotor($concierto, $desglose);
 
+            //La operación ha sido correcta y hacemos un commit a db
             \DB::commit();
 
-            //TODO podríamos hacer un método response generico para success o error, sería algo parecido a esta respuesta
-            return response()->json([
-                'status' => 'success',
-                'msg' => 'Alta de concierto correcta',
-                'dev_msg' => '', //Mensaje para debug, si fuera necesario
-            ], 200);
+            return $this->customResponse(true, 'Alta de concierto correcta.');
         } catch (\Exception $ex) {
+            //Ha habido una exception y hacemos un rollback db
             \DB::rollback();
+
+            //Logueamos el error
             \Log::error('Error en el alta de un concierto', ['request' => $request->all(), 'exception' => $ex]);
 
-            //TODO podríamos hacer un método response generico para success o error, sería algo parecido a esta respuesta
-            return response()->json([
-                    'status' => 'error',
-                    'msg' => 'Ha ocurrido un error durante el alta de concierto.',
-                    'dev_msg' => '', //Mensaje para debug, si fuera necesario
-                ], 400);
+            return $this->customResponse(false, 'Ha ocurrido un error durante el alta de concierto.', 400, 'Exception en alta de concierto.');
         }
+    }
+
+    /**
+     * Respuesta custom para api
+     *
+     * @param bool $status
+     * @param array $msg
+     * @param int $status_code
+     * @param string $dev_msg
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function customResponse($status = true, $msg = [], $status_code = 200, $dev_msg = '') {
+        //Formamos el array genérico
+        $data = [
+            'status' => $status ? 'success' : 'error',
+            'msg' => $msg,
+            'dev_msg' => $dev_msg
+        ];
+
+        return response()->json($data, $status_code);
     }
 }

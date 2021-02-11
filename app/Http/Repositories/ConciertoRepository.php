@@ -3,6 +3,7 @@
 namespace App\Http\Repositories;
 
 use App\Http\Classes\DesgloseConcierto;
+use App\Jobs\EnviarMailDesglosePromotorJob;
 use App\Mail\EnviarMailDesgloseConciertoPromotor;
 
 /**
@@ -12,6 +13,8 @@ use App\Mail\EnviarMailDesgloseConciertoPromotor;
 class ConciertoRepository
 {
     /**
+     * Alta de concierto
+     *
      * @param $nombre
      * @param $promotor_id
      * @param $recinto_id
@@ -30,7 +33,7 @@ class ConciertoRepository
             'nombre' => $nombre,
             'numero_espectadores' => $numero_espectadores,
             'fecha' => $fecha,
-//            'rentabilidad' => $rentabilidad, //La updateamos a futuro por si se quieren crear conciertos antes de que se celebren
+            //'rentabilidad' => $rentabilidad, //La updateamos a futuro por si se quieren crear conciertos antes de que se celebren
         ]);
 
         //Añadimos los grupos al concierto
@@ -59,12 +62,17 @@ class ConciertoRepository
         return $update;
     }
 
-    public function enviarMailPromotor(Concierto $concierto = null, DesgloseConcierto $desglose, $mail_promotor)
+    /**
+     * Enviar mail async
+     *
+     * @param Concierto|null $concierto
+     * @param DesgloseConcierto $desglose
+     * @param $mail_promotor
+     */
+    public function enviarMailPromotor(Concierto $concierto = null, DesgloseConcierto $desglose)
     {
-        //Enviamos el mail al promotor
-        \Mail::to($mail_promotor)->send(new EnviarMailDesgloseConciertoPromotor($concierto, $desglose));
-
-        //TODO enviamos el mail
+        //Enviamos el mail al promotor a través de un job async para no tener que esperar la respuesta del envio
+        EnviarMailDesglosePromotorJob::dispatch($concierto, $desglose);
     }
 
     /**

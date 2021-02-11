@@ -64,8 +64,8 @@
         <strong>@lang('strings.nombre')</strong>><span>{{ $concierto->nombre }}</span>
         <strong>@lang('strings.promotor')</strong>><span>{{ $concierto->promotor->nombre }}</span>
         <strong>@lang('strings.recinto')</strong>><span>{{ $concierto->recinto->nombre }}</span>
-        <strong>@lang('strings.numero_espectadores')</strong>><span>{{ $concierto->nombre }}</span>
-        <strong>@lang('strings.fecha')</strong>><span>{{ $concierto->nombre }}</span>
+        <strong>@lang('strings.numero_espectadores')</strong>><span>{{ $concierto->numero_espectadores }}</span>
+        <strong>@lang('strings.fecha')</strong>><span>{{ $concierto->fecha }}</span>
     </div>
 
     <table>
