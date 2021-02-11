@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Models\Grupo;
-use App\Models\Models\Medio;
-use App\Models\Models\Promotor;
-use App\Models\Models\Recinto;
+use App\Models\Grupo;
+use App\Models\Medio;
+use App\Models\Promotor;
+use App\Models\Recinto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,13 +39,13 @@ class Concierto extends Model
         return $this->belongsToMany(Grupo::class, 'grupos_conciertos', 'id_concierto', 'id_grupo');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function mediosPublicitarios()
-    {
-        return $this->belongsToMany(Medio::class, 'grupos_medios', 'id_concierto', 'id_medio');
-    }
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+//     */
+//    public function medios()
+//    {
+//        return $this->belongsToMany(Medio::class, 'grupos_medios', 'id_concierto', 'id_medio');
+//    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

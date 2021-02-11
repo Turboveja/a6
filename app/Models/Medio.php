@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Recinto
+ * Class Medio
  * @package App\Models\Models
  */
-class Recinto extends Model
+class Medio extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -18,5 +18,12 @@ class Recinto extends Model
     /**
      * @var string
      */
-    protected $table = 'conciertos';
+    protected $table = 'medios';
+
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'id','nombre'
+    ];
 }

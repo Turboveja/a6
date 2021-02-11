@@ -5,6 +5,7 @@ namespace App\Http\Repositories;
 use App\Http\Classes\DesgloseConcierto;
 use App\Jobs\EnviarMailDesglosePromotorJob;
 use App\Mail\EnviarMailDesgloseConciertoPromotor;
+use App\Models\Concierto;
 
 /**
  * Class ConciertoRepository
@@ -24,7 +25,7 @@ class ConciertoRepository
      * @param $medios
      * @return mixed
      */
-    public function altaConcierto($nombre, $promotor_id, $recinto_id, $numero_espectadores = 0, $fecha, $grupos, $medios)
+    public function altaConcierto($nombre, $promotor_id, $recinto_id, $numero_espectadores, $fecha, $grupos, $medios)
     {
         //Creamos el concierto
         $concierto = Concierto::create([
@@ -40,7 +41,9 @@ class ConciertoRepository
         $concierto->grupos()->attach($grupos);
 
         //Añadimos los medios publicitarios al concierto
-        $concierto->mediosPublicitarios()->attach($medios);
+        //FIXME la relation de grupos_medios (?) debería de ser conciertos_medios,
+        //para guardar así la información de los medios de ese concierto, y no afecte si un grupo cambia a futuro sus medios
+//        $concierto->medios()->attach($medios);
 
         return $concierto;
     }

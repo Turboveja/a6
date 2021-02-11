@@ -12,9 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    dd(\Illuminate\Support\Facades\Schema::hasTable('NuevaTablas'));
-    dd('funciona');
-    return view('welcome');
-});
+//
+//Route::get('/', function () {
+//    dd(\Illuminate\Support\Facades\Schema::hasTable(''));
+//    return view('welcome');
+//});

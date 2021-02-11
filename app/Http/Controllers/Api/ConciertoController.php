@@ -24,16 +24,16 @@ class ConciertoController extends Controller
     {
         //Validamos los datos que nos llegan
         //Podríamos hacer la validación a traves de un objeto Request validation, pero está forma es más facil de debug
-        $request->validate([
+        $validation = $request->validate([
             'nombre' => 'required|string|max:80',
             'fecha' => 'required|date',
             'recinto_id' => 'required|exists:recintos,id',
             'numero_espectadores' => 'required|integer',
             'promotor_id' => 'required|exists:promotores,id',
             'grupos_ids' => 'required|array',
-            'grupos_ids.*' => 'required|exists:grupos.id',
+            'grupos_ids.*' => 'required|exists:grupos,id',
             'medios_publicitarios_ids' => 'required|array',
-            'medios_publicitarios_ids.*' => 'required|exists:medios.id',
+            'medios_publicitarios_ids.*' => 'required|exists:medios,id',
         ]);
 
         try {
@@ -56,7 +56,7 @@ class ConciertoController extends Controller
             $concierto->load('recinto');
             $concierto->load('promotor');
             $concierto->load('grupos');
-            $concierto->load('medios');
+//            $concierto->load('medios');
 
             //Obtenemos el desglose del concierto
             $desglose = $concierto_repository->obtenerDesgloseConcierto($concierto);
